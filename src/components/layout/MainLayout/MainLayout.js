@@ -1,13 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
-import { sizing } from '@material-ui/system';
 
 
 // import clsx from 'clsx';
 import { Header } from '../Header/Header';
 
-import {Box, Container, Grid} from '@material-ui/core';
+import { Container, Grid} from '@material-ui/core';
 
 // import { connect } from 'react-redux';
 // import { reduxSelector, reduxActionCreator } from '../../../redux/exampleRedux.js';

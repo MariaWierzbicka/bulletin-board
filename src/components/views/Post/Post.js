@@ -39,7 +39,7 @@ const Component = ({className, children}) => {
 
   const {id} = useParams();
   const post = useSelector(state => getPost(state, id));
-  const { author, authorId, created, updated, title, text, photo, price, phone, location } = post;
+  const { author, title, text, photo, price, phone, location } = post;
 
   // const currentStatus = useSelector(getStatus);
   const loggedUser = useSelector(getUser);

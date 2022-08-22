@@ -9,110 +9,87 @@ import { makeStyles } from '@material-ui/core/styles';
 
 // import { connect } from 'react-redux';
 // import { reduxSelector, reduxActionCreator } from '../../../redux/exampleRedux.js';
-import { Button, Container, FormControl, Grid, Input, InputLabel, TextField, TextareaAutosize, Typography, FormControlLabel } from '@material-ui/core';
+import { Button, Container, Grid, TextField, Typography } from '@material-ui/core';
 
 // import styles from './PostAdd.module.scss';
 const useStyles = makeStyles((theme) => ({
   root: {
     maxWidth: 700,
   },
-
-
+  field: {
+    margin: '20px 0',
+    align: 'center',
+  },
 }));
 
 const Component = ({className, children}) => {
   const styles = useStyles();
-
   const dispatch = useDispatch();
-  const user = useSelector(getUser);
+  const loggedUser = useSelector(getUser);
 
   const [title, setTitle] = useState('');
   const [text, setText] = useState('');
   const [location, setLocation] = useState('');
   const [phone, setPhone] = useState('');
   const [photo, setPhoto] = useState('');
-  const [status, setStatus] = useState('');
   const [price, setPrice] = useState('');
-  const [created, setCreated] = useState('');
-  const [updated, setUpdated] = useState('');
-  const [email, setEmail] = useState('');
 
-  const author = user.email;
-  const authorId = user.authorId; 
-  
-
-  const handleSave = e => {
-    e.preventDefault();
-    setStatus('draft');
-    setCreated(new Date());
-    setUpdated(created);
-    
+  const handleSubmit = newStatus => {    
     dispatch(addPost( { 
-      author,
-      authorId,
-      created,
-      updated,
+      author: loggedUser.email,
+      authorId: loggedUser._id,
+      created: new Date(),
+      updated: new Date(),
       location,
-      status,
+      status: newStatus,
       title,
       text, 
       photo,
       price,
     }));
-
   };
+
   return (
     <Container className={clsx(className, styles.root)}>
-      <Typography variant="h4" gutterBottom>
-        Add post
-      </Typography>
-      <Grid container direction="column" >      
-        <form  noValidate autoComplete="off">
-          <Grid item sm={10}>
-            <TextField variant="outlined" id="standard-basic" label="Standard" />
-
-            {/* <FormControl>
-              <Input fullWidth value={title} id="title" placeholder="Title" type="text" minLength="10"
-                onChange={e => setTitle(e.target.value)}/>
-            </FormControl> */}
-          </Grid>
-          <Grid item sm={10}>
-
-            <FormControl>
-              <Input multiline outlined rows={4} value={title} id="title" placeholder="Title" type="text" minLength="10"
-                onChange={e => setTitle(e.target.value)}/>
-            </FormControl>
-          </Grid>
-
-          <Grid item sm={10}>
-
-            <FormControl>
-              <Input  value={title} id="title" placeholder="Title" type="text" minLength="10"
-                onChange={e => setTitle(e.target.value)}/>
-            </FormControl>
-          </Grid>
-
-          <Grid item sm={6}>
-
-            <FormControl>
-              <Input  value={title} id="title" placeholder="Title" type="text" minLength="10"
-                onChange={e => setTitle(e.target.value)}/>
-            </FormControl>
-          </Grid>
-
-          <Grid item sm={6}>
-
-            <FormControl>
-              <Input  value={title} id="title" placeholder="Title" type="text" minLength="10"
-                onChange={e => setTitle(e.target.value)}/>
-            </FormControl>
-          </Grid>
-
-        
-        </form>
-        <Button  onClick={handleSave}>Save</Button>
+      <Grid container direction="column" align="center">      
+        <Typography variant="h4" gutterBottom >
+          Add post
+        </Typography>   
       </Grid>
-
+      <Grid container direction="column" align="center">      
+        <form autoComplete="off">
+          <Grid item sm={7} className={styles.field}>            
+            <TextField variant="outlined" fullWidth height={1} value={title} id="title" placeholder="Title" type="text" minLength="10"
+              onChange={e => setTitle(e.target.value)} />
+          </Grid>
+          <Grid item sm={7} width={100} className={styles.field} >
+            <TextField multiline fullWidth variant="outlined" rows={4} value={text} id="text" placeholder="Text" type="text" minLength="50"
+              onChange={e => setText(e.target.value)}/>
+          </Grid>
+          <Grid item sm={7}>
+            <Button variant="contained" component="label">
+              Upload photo
+              <input type="file" hidden value={photo} onChange={e => setPhoto(e.target.value)} />
+            </Button>
+          </Grid>
+          <Grid item sm={5} className={styles.field}>            
+            <TextField variant="outlined" fullWidth value={price} id="price" placeholder="Price" type="text"
+              onChange={e => setPrice(e.target.value)} />
+          </Grid>
+          <Grid item sm={5} className={styles.field}>            
+            <TextField variant="outlined" fullWidth value={location} id="location" placeholder="Location" type="text"
+              onChange={e => setLocation(e.target.value)} />
+          </Grid>
+          <Grid item sm={4} className={styles.field}>            
+            <TextField variant="outlined" fullWidth value={phone} id="phone" placeholder="Phone number" type="text"
+              onChange={e => setPhone(e.target.value)} />
+          </Grid>
+          <Grid item align="center">
+            <Button onClick={(e) => {e.preventDefault(); handleSubmit('draft');}}>Save</Button>
+            <Button onClick={(e) => {e.preventDefault(); handleSubmit('published');}}>Publish</Button>
+          </Grid>
+        </form>
+      </Grid>
     </Container>
   );
 };
