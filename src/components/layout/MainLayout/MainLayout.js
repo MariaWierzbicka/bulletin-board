@@ -1,7 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { makeStyles } from '@material-ui/core/styles';
 
-import clsx from 'clsx';
+// import clsx from 'clsx';
 import { Header } from '../Header/Header';
 
 import {Container} from '@material-ui/core';
@@ -9,16 +10,25 @@ import {Container} from '@material-ui/core';
 // import { connect } from 'react-redux';
 // import { reduxSelector, reduxActionCreator } from '../../../redux/exampleRedux.js';
 
-import styles from './MainLayout.module.scss';
+// import styles from './MainLayout.module.scss';
+const useStyles = makeStyles({
+  root: {
+    minheight: 400,
+    padding: '50px 0',
+  },
+});
+const Component = ({className, children}) => {
+  const styles = useStyles();
+  return (
 
-const Component = ({className, children}) => (
-  <div className={clsx(className, styles.root)}>
-    <Header />
-    <Container maxWidth="md">
-      {children}
-    </Container>
-  </div>
-);
+    <>
+      <Header />
+      <Container maxWidth="md" className={styles.root}>
+        {children}
+      </Container>
+    </>
+  );
+};
 
 Component.propTypes = {
   children: PropTypes.node,

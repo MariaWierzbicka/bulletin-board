@@ -16,9 +16,12 @@ import { NotFound } from './components/views/NotFound/NotFound';
 import { UserPosts } from './components/views/UserPosts/UserPosts';
 
 const theme = createMuiTheme({
+  spacing: 1,
   palette: {
-    primary: { main: '#2B4C6F' },
+    primary: { main: '#D1C3BA', light: '#F3F0EF'},
+    secondary: {main: '#ffffff'},
   },
+
 });
 
 const App = () => (

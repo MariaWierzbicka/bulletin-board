@@ -1,30 +1,26 @@
 import React from 'react';
+// import {Link} from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import { getStatus, updateStatus } from '../../../redux/statusRedux';
 
 import clsx from 'clsx';
-import {AppBar, Button, FormControl, Grid, InputLabel, MenuItem, Select, Toolbar, Typography} from '@material-ui/core';
+import {AppBar, Button, FormControl, Grid, Link, MenuItem, Select, Toolbar, Typography} from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
 // import { connect } from 'react-redux';
 // import { reduxSelector, reduxActionCreator } from '../../../redux/exampleRedux.js';
 
-import styles from './Header.module.scss';
-// const useStyles = makeStyles((theme) => ({
-//   root: {
-//     flexGrow: 1,
-//   },
-//   paper: {
-//     padding: theme.spacing(2),
-//     textAlign: 'center',
-//     color: theme.palette.text.secondary,
-//   },
-// }));
+// import styles from './Header.module.scss';
+const useStyles = makeStyles((theme) => ({
+  root: {
+    color: theme.palette.secondary.contrastText,
+  },
+}));
 
 const Component = ({className, children}) => {
-  // const styles = useStyles();
+  const styles = useStyles();
 
   const currentStatus = useSelector(getStatus);
   const dispatch = useDispatch();
@@ -41,18 +37,17 @@ const Component = ({className, children}) => {
         <Toolbar>
           <Grid container justify="center" align="center">
             <Grid item xs={4}  align="center">
-              <Typography>
-                BulletinBoard
-              </Typography>
+              <Typography ><Link href="/" className={styles.root} >BulletinBoard</Link></Typography>
             </Grid>
-            <Grid item xs={4} align="center">
-              <FormControl>
+            <Grid item xs={4} align="center" >
+              <FormControl color="secondary">
                 {/* <InputLabel>Status</InputLabel> */}
                 <Select
                   labelId="demo-simple-select-label"
                   id="demo-simple-select"
                   value={currentStatus}
-                  onChange={handleChange}
+                  onChange={handleChange}    
+                  className={styles.root}              
                 >
                   <MenuItem value={'logged'}>Logged</MenuItem>
                   <MenuItem value={'notLogged'}>Not logged</MenuItem>
@@ -62,10 +57,10 @@ const Component = ({className, children}) => {
             </Grid>
             <Grid item xs={4} align="center">
               { currentStatus === 'notLogged' &&
-              <Button>Log in</Button>}
+              <Button className={styles.root}>Log in</Button>}
               { (currentStatus === 'logged' || currentStatus === 'admin') && <>
-                <Button href="/user/posts">My posts</Button>
-                <Button >Log out</Button>
+                <Button href="/user/posts" className={styles.root}>My posts</Button>
+                <Button className={styles.root}>Log out</Button>
               </>}
 
 
