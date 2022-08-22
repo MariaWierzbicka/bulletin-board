@@ -35,9 +35,9 @@ const Component = ({className, children}) => {
     <div className={clsx(className, styles.root)}>
       <AppBar position="static">
         <Toolbar>
-          <Grid container justify="center" align="center">
+          <Grid container justify="center" alignItems="center">
             <Grid item xs={4}  align="center">
-              <Typography ><Link href="/" className={styles.root} >BulletinBoard</Link></Typography>
+              <Typography variant="h6"><Link href="/" className={styles.root} >BulletinBoard</Link></Typography>
             </Grid>
             <Grid item xs={4} align="center" >
               <FormControl color="secondary">

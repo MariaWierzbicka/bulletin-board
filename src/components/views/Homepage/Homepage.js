@@ -14,7 +14,6 @@ import { Button, Card, CardActionArea, CardActions, CardContent, CardMedia, Grid
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    minheight: 400,
   },
   media: {
     height: 140,

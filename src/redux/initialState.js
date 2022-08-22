@@ -24,9 +24,9 @@ export const initialState = {
         title: 'Room for rent',
         text: 'I have a spare room for rent. Low price!',
         photo: null,
-        price: null,
-        phone: null,
-        location: null,
+        price: '20',
+        phone: '123456789',
+        location: 'Chicago',
       }],
     loading: {
       active: false,
