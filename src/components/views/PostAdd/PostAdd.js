@@ -5,11 +5,14 @@ import {getUser} from '../../../redux/usersRedux';
 import { addPost } from '../../../redux/postsRedux';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
+import { useHistory } from 'react-router-dom';
+
 
 
 // import { connect } from 'react-redux';
 // import { reduxSelector, reduxActionCreator } from '../../../redux/exampleRedux.js';
 import { Button, Container, Grid, TextField, Typography } from '@material-ui/core';
+import { NotFound } from '../NotFound/NotFound';
 
 // import styles from './PostAdd.module.scss';
 const useStyles = makeStyles((theme) => ({
@@ -26,6 +29,8 @@ const Component = ({className, children}) => {
   const styles = useStyles();
   const dispatch = useDispatch();
   const loggedUser = useSelector(getUser);
+  const history = useHistory();
+
 
   const [title, setTitle] = useState('');
   const [text, setText] = useState('');
@@ -47,51 +52,57 @@ const Component = ({className, children}) => {
       photo,
       price,
     }));
+    history.replace('/success');
   };
 
-  return (
-    <Container className={clsx(className, styles.root)}>
-      <Grid container direction="column" align="center">      
-        <Typography variant="h4" gutterBottom >
-          Add post
-        </Typography>   
-      </Grid>
-      <Grid container direction="column" align="center">      
-        <form autoComplete="off">
-          <Grid item sm={7} className={styles.field}>            
-            <TextField variant="outlined" fullWidth height={1} value={title} id="title" placeholder="Title" type="text" minLength="10"
-              onChange={e => setTitle(e.target.value)} />
-          </Grid>
-          <Grid item sm={7} width={100} className={styles.field} >
-            <TextField multiline fullWidth variant="outlined" rows={4} value={text} id="text" placeholder="Text" type="text" minLength="50"
-              onChange={e => setText(e.target.value)}/>
-          </Grid>
-          <Grid item sm={7}>
-            <Button variant="contained" component="label">
-              Upload photo
-              <input type="file" hidden value={photo} onChange={e => setPhoto(e.target.value)} />
-            </Button>
-          </Grid>
-          <Grid item sm={5} className={styles.field}>            
-            <TextField variant="outlined" fullWidth value={price} id="price" placeholder="Price" type="text"
-              onChange={e => setPrice(e.target.value)} />
-          </Grid>
-          <Grid item sm={5} className={styles.field}>            
-            <TextField variant="outlined" fullWidth value={location} id="location" placeholder="Location" type="text"
-              onChange={e => setLocation(e.target.value)} />
-          </Grid>
-          <Grid item sm={4} className={styles.field}>            
-            <TextField variant="outlined" fullWidth value={phone} id="phone" placeholder="Phone number" type="text"
-              onChange={e => setPhone(e.target.value)} />
-          </Grid>
-          <Grid item align="center">
-            <Button onClick={(e) => {e.preventDefault(); handleSubmit('draft');}}>Save</Button>
-            <Button onClick={(e) => {e.preventDefault(); handleSubmit('published');}}>Publish</Button>
-          </Grid>
-        </form>
-      </Grid>
-    </Container>
-  );
+
+  if(loggedUser || loggedUser.admin){  
+    return (
+      <Container className={clsx(className, styles.root)}>
+        <Grid container direction="column" align="center">      
+          <Typography variant="h2" gutterBottom >
+            Add post
+          </Typography>   
+        </Grid>
+        <Grid container direction="column" align="center">      
+          <form autoComplete="off">
+            <Grid item sm={7} className={styles.field}>            
+              <TextField variant="outlined" fullWidth height={1} value={title} id="title" placeholder="Title" type="text" minLength="10"
+                onChange={e => setTitle(e.target.value)} />
+            </Grid>
+            <Grid item sm={7} width={100} className={styles.field} >
+              <TextField multiline fullWidth variant="outlined" rows={4} value={text} id="text" placeholder="Text" type="text" minLength="50"
+                onChange={e => setText(e.target.value)}/>
+            </Grid>
+            <Grid item sm={7}>
+              <Button variant="contained" component="label">
+                Upload photo
+                <input type="file" hidden value={photo} onChange={e => setPhoto(e.target.value)} />
+              </Button>
+            </Grid>
+            <Grid item sm={5} className={styles.field}>            
+              <TextField variant="outlined" fullWidth value={price} id="price" placeholder="Price" type="text"
+                onChange={e => setPrice(e.target.value)} />
+            </Grid>
+            <Grid item sm={5} className={styles.field}>            
+              <TextField variant="outlined" fullWidth value={location} id="location" placeholder="Location" type="text"
+                onChange={e => setLocation(e.target.value)} />
+            </Grid>
+            <Grid item sm={4} className={styles.field}>            
+              <TextField variant="outlined" fullWidth value={phone} id="phone" placeholder="Phone number" type="text"
+                onChange={e => setPhone(e.target.value)} />
+            </Grid>
+            <Grid item align="center">
+              <Button onClick={(e) => {e.preventDefault(); handleSubmit('draft');}}>Save</Button>
+              <Button onClick={(e) => {e.preventDefault(); handleSubmit('published');}}>Publish</Button>
+            </Grid>
+          </form>
+        </Grid>
+      </Container>
+    );
+  } else {
+    return(<NotFound />);
+  }
 };
 
 

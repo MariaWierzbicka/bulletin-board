@@ -57,14 +57,10 @@ export const reducer = (statePart = [], action = {}) => {
       };
     }
     case ADD_POST: {
-      console.log(statePart);
       return [...statePart.data, { ...action.payload }];
 
     }
     case EDIT_POST: {
-      // statePart.data = statePart.data.map(post => (post._id === action.payload._id ? {...post, ...action.payload} : post));
-      // return statePart;
-      console.log(statePart.data);
       return statePart.data.map(post => (post._id === action.payload._id ? {...post, ...action.payload} : post)); 
     }
     default:

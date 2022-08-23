@@ -7,13 +7,13 @@ import { Grid, Typography } from '@material-ui/core';
 // import { connect } from 'react-redux';
 // import { reduxSelector, reduxActionCreator } from '../../../redux/exampleRedux.js';
 
-import styles from './NotFound.module.scss';
+import styles from './Success.module.scss';
 
 const Component = ({className, children}) => (
   <Grid container justify="center" className={clsx(className, styles.root)}>
     <Grid item>
       <Typography variant="h2">
-        Page not found
+        Post saved!
       </Typography>
     </Grid> 
   </Grid>
@@ -35,7 +35,7 @@ Component.propTypes = {
 // const Container = connect(mapStateToProps, mapDispatchToProps)(Component);
 
 export {
-  Component as NotFound,
-  // Container as NotFound,
-  Component as NotFoundComponent,
+  Component as Success,
+  // Container as Success,
+  Component as SuccessComponent,
 };
