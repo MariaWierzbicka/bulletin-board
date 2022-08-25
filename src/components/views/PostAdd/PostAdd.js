@@ -1,20 +1,17 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
-import {getUser} from '../../../redux/usersRedux';
-import { addPost } from '../../../redux/postsRedux';
+import {getUser, loadUserRequest} from '../../../redux/usersRedux';
+import { addPostRequest } from '../../../redux/postsRedux';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
 import { useHistory } from 'react-router-dom';
+import { useEffect } from 'react';
+import { getPosts, loadPostsRequest} from '../../../redux/postsRedux';
 
-
-
-// import { connect } from 'react-redux';
-// import { reduxSelector, reduxActionCreator } from '../../../redux/exampleRedux.js';
 import { Button, Container, Grid, TextField, Typography } from '@material-ui/core';
 import { NotFound } from '../NotFound/NotFound';
 
-// import styles from './PostAdd.module.scss';
 const useStyles = makeStyles((theme) => ({
   root: {
     maxWidth: 700,
@@ -28,9 +25,16 @@ const useStyles = makeStyles((theme) => ({
 const Component = ({className, children}) => {
   const styles = useStyles();
   const dispatch = useDispatch();
-  const loggedUser = useSelector(getUser);
+  const user = useSelector(getUser);
   const history = useHistory();
 
+  useEffect(() => {
+    dispatch(loadPostsRequest());
+  }, [dispatch]);
+
+  useEffect(() => {
+    dispatch(loadUserRequest());
+  }, [dispatch]);
 
   const [title, setTitle] = useState('');
   const [text, setText] = useState('');
@@ -39,10 +43,11 @@ const Component = ({className, children}) => {
   const [photo, setPhoto] = useState('');
   const [price, setPrice] = useState('');
 
-  const handleSubmit = newStatus => {    
-    dispatch(addPost( { 
-      author: loggedUser.email,
-      authorId: loggedUser._id,
+  
+  const handleSubmit = newStatus => {  
+    dispatch(addPostRequest( { 
+      author: user.email,
+      authorId: user.userId,
       created: new Date(),
       updated: new Date(),
       location,
@@ -52,11 +57,11 @@ const Component = ({className, children}) => {
       photo,
       price,
     }));
-    history.replace('/success');
+    history.replace('/');
   };
 
 
-  if(loggedUser || loggedUser.admin){  
+  if(user){  
     return (
       <Container className={clsx(className, styles.root)}>
         <Grid container direction="column" align="center">      

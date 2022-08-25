@@ -1,5 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
+import { useEffect } from 'react';
 
 // import clsx from 'clsx';
 
@@ -9,9 +12,8 @@ import { Button, Grid, List, ListItem, ListItemText} from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
 // import styles from './UserPosts.module.scss';
-import { useSelector } from 'react-redux';
-import { getUser } from '../../../redux/usersRedux';
-import { getPostsByUser } from '../../../redux/postsRedux';
+import { getUser, loadUserRequest } from '../../../redux/usersRedux';
+import { getPostsByUser, loadUserPostsRequest} from '../../../redux/postsRedux';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -26,16 +28,24 @@ const useStyles = makeStyles((theme) => ({
 
 const Component = ({className, children}) => {
   const styles = useStyles();
+  const user = useSelector(getUser);
+  const dispatch = useDispatch();
+  
+  useEffect(() => {
+    if(!user) dispatch(loadUserRequest());
+    if(user) dispatch(loadUserPostsRequest(user.userId));
+  }, [user]);
 
-  const loggedUser = useSelector(getUser);
-  console.log(loggedUser._id);
-  const posts = useSelector(state => getPostsByUser(state, loggedUser._id));
+  const posts = useSelector(state => {
+    if(user) return getPostsByUser(state, user.userId);
+    return [];
+  });
 
   return(
     <Grid container justify="center">
       <Grid item xs={8}>
         <List className={styles.root}>
-          {posts.map(post=> 
+          {posts && posts.map(post=> 
             <ListItem key={post._id} className={styles.listItem}>
               <ListItemText primary={post.title} secondary={post.status} />
               <Button href={`/post/${post._id}/edit`}size="large">Edit</Button>

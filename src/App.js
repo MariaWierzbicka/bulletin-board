@@ -14,7 +14,6 @@ import { PostEdit } from './components/views/PostEdit/PostEdit';
 import { PostAdd } from './components/views/PostAdd/PostAdd';
 import { NotFound } from './components/views/NotFound/NotFound';
 import { UserPosts } from './components/views/UserPosts/UserPosts';
-import { Success } from './components/views/Success/Success';
 
 const theme = createMuiTheme({
   spacing: 1,
@@ -38,7 +37,6 @@ const App = () => (
               <Route exact path='/post/:id' component={Post} />
               <Route exact path='/post/:id/edit' component={PostEdit} />
               <Route exact path='/user/posts' component={UserPosts} />
-              <Route path='/success' component={Success} />
               <Route path='/*' component={NotFound} />
             </Switch>
           </MainLayout>

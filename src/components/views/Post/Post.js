@@ -3,16 +3,17 @@ import PropTypes from 'prop-types';
 // import clsx from 'clsx';
 
 // import { connect } from 'react-redux';
-// import { reduxSelector, reduxActionCreator } from '../../../redux/exampleRedux.js';
 import { Button, Grid, Typography} from '@material-ui/core';
 import LocationOnIcon from '@material-ui/icons/LocationOn';
 
 // import styles from './Post.module.scss';
 
-import { getUser } from '../../../redux/usersRedux';
+import {getUser, loadUserRequest} from '../../../redux/usersRedux';
 import { useParams } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import { getPost } from '../../../redux/postsRedux';
+import { useSelector, useDispatch } from 'react-redux';
+import { useEffect } from 'react';
+import { getLoading, getPost, loadSinglePostRequest} from '../../../redux/postsRedux';
+
 import { makeStyles } from '@material-ui/core/styles';
 import { NotFound } from '../NotFound/NotFound';
 
@@ -48,23 +49,35 @@ const useStyles = makeStyles((theme) => ({
 
 const Component = ({className, children}) => {
   const styles = useStyles();
-
   const {id} = useParams();
-  const post = useSelector(state => getPost(state, id));
-  // const currentStatus = useSelector(getStatus);
-  const loggedUser = useSelector(getUser);
 
-  if(post === undefined){
-    return(<NotFound />);
-  } else {
-    const { author, created, updated, title, text, photo, price, phone, location } = post;
+  const dispatch = useDispatch();
+  const loading = useSelector(getLoading);
+  const post = useSelector(state => getPost(state, id));
+  const user = useSelector(getUser);
   
+  useEffect(() => {
+    if(!post) dispatch(loadSinglePostRequest(id));
+    dispatch(loadUserRequest());
+  }, [dispatch]);
+
+  if(loading.active) {
+    return <h1>Loading</h1>;
+  } else if(loading.error) {
+    return <h1>Error</h1>;
+  } else if(!post) { return <NotFound />;
+  } else { 
+    const { author, created, updated, title, text, photo, price, phone, location } = post;
+    const dateCreated = new Date(created);
+    const dateUpdated = new Date(updated);
+
     return (
+  
       <Grid container className={styles.root}>
         <Grid container justify="flex-start" >
           <Grid item  className={styles.dateItem}>
             <Typography className={styles.date} variant="overline" >
-              Created: {created.toDateString()}  /  Last update: {updated.toDateString()}
+              Created: {dateCreated.toDateString()}  /  Last update: {dateUpdated.toDateString()}
             </Typography>
           </Grid>
         </Grid>
@@ -72,7 +85,7 @@ const Component = ({className, children}) => {
           <Grid item xs={9} >
             <Typography variant="h4">{post.title}</Typography>
           </Grid>
-          {(loggedUser._id === post.authorId || loggedUser.admin) && 
+          { user && (user.userId === post.authorId || user.admin) && 
           <Grid item xs={2} container justify="flex-end">
             <Button href={`/post/${post._id}/edit`} className={styles.button}>Edit post</Button>
           </Grid>}
@@ -118,16 +131,6 @@ Component.propTypes = {
   children: PropTypes.node,
   className: PropTypes.string,
 };
-
-// const mapStateToProps = state => ({
-//   someProp: reduxSelector(state),
-// });
-
-// const mapDispatchToProps = dispatch => ({
-//   someAction: arg => dispatch(reduxActionCreator(arg)),
-// });
-
-// const Container = connect(mapStateToProps, mapDispatchToProps)(Component);
 
 export {
   Component as Post,

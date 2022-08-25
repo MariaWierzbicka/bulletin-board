@@ -1,18 +1,13 @@
 import React from 'react';
-// import {Link} from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
-import { getStatus, updateStatus } from '../../../redux/statusRedux';
-
+import { loadUserRequest, getUser, logoutRequest } from '../../../redux/usersRedux';
+import { useEffect } from 'react';
 import clsx from 'clsx';
-import {AppBar, Button, FormControl, Grid, Link, MenuItem, Select, Toolbar, Typography} from '@material-ui/core';
+import {AppBar, Button, Grid, Link, Toolbar, Typography} from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
-// import { connect } from 'react-redux';
-// import { reduxSelector, reduxActionCreator } from '../../../redux/exampleRedux.js';
-
-// import styles from './Header.module.scss';
 const useStyles = makeStyles((theme) => ({
   root: {
     color: theme.palette.secondary.contrastText,
@@ -21,13 +16,17 @@ const useStyles = makeStyles((theme) => ({
 
 const Component = ({className, children}) => {
   const styles = useStyles();
-
-  const currentStatus = useSelector(getStatus);
   const dispatch = useDispatch();
-  
-  const handleChange = e => {
+  const user = useSelector(getUser);
+
+  useEffect(() => {
+    dispatch(loadUserRequest());
+  }, [dispatch]);
+
+  const handleLogout = e => {
     e.preventDefault();
-    dispatch(updateStatus(e.target.value));
+    dispatch(logoutRequest());
+    window.location.reload();
   };
 
 
@@ -35,36 +34,17 @@ const Component = ({className, children}) => {
     <div className={clsx(className, styles.root)}>
       <AppBar position="static">
         <Toolbar>
-          <Grid container justify="center" alignItems="center">
+          <Grid container justify="space-around" alignItems="center">
             <Grid item xs={4}  align="center">
               <Typography variant="h6"><Link href="/" className={styles.root} >BulletinBoard</Link></Typography>
             </Grid>
-            <Grid item xs={4} align="center" >
-              <FormControl color="secondary">
-                {/* <InputLabel>Status</InputLabel> */}
-                <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  value={currentStatus}
-                  onChange={handleChange}    
-                  className={styles.root}              
-                >
-                  <MenuItem value={'logged'}>Logged</MenuItem>
-                  <MenuItem value={'notLogged'}>Not logged</MenuItem>
-                  <MenuItem value={'admin'}>Admin</MenuItem>
-                </Select>
-              </FormControl>
-            </Grid>
             <Grid item xs={4} align="center">
-              { currentStatus === 'notLogged' &&
-              <Button className={styles.root}>Log in</Button>}
-              { (currentStatus === 'logged' || currentStatus === 'admin') && <>
+              { !user &&
+                <Button href="http://localhost:8000/auth/google" className={styles.root}>Log in</Button>}
+              { user && <>
                 <Button href="/user/posts" className={styles.root}>My posts</Button>
-                <Button className={styles.root}>Log out</Button>
+                <Button onClick={handleLogout}  className={styles.root}>Log out</Button>
               </>}
-
-
-
             </Grid>
           </Grid>
         </Toolbar>
@@ -77,16 +57,6 @@ Component.propTypes = {
   children: PropTypes.node,
   className: PropTypes.string,
 };
-
-// const mapStateToProps = state => ({
-//   someProp: reduxSelector(state),
-// });
-
-// const mapDispatchToProps = dispatch => ({
-//   someAction: arg => dispatch(reduxActionCreator(arg)),
-// });
-
-// const Container = connect(mapStateToProps, mapDispatchToProps)(Component);
 
 export {
   Component as Header,

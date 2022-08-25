@@ -1,15 +1,16 @@
 import React from 'react';
+import {Link} from 'react-router-dom';
 import PropTypes from 'prop-types';
-import { useSelector } from 'react-redux';
-import { getPublishedPosts } from '../../../redux/postsRedux';
-import { getStatus } from '../../../redux/statusRedux';
+import { getPosts, loadPostsRequest, getLoading} from '../../../redux/postsRedux';
 import { makeStyles } from '@material-ui/core/styles';
+import { loadUserRequest, getUser } from '../../../redux/usersRedux';
 
 import clsx from 'clsx';
+import { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 
-// import { connect } from 'react-redux';
-// import { reduxSelector, reduxActionCreator } from '../../../redux/exampleRedux.js';
-import { Button, Card, CardActionArea, CardActions, CardContent, CardMedia, Grid, Typography} from '@material-ui/core';
+
+import { Button, Card, CardActionArea, CardActions, CardContent, Grid, Typography} from '@material-ui/core';
 // import styles from './Homepage.module.scss';
 
 const useStyles = makeStyles((theme) => ({
@@ -26,28 +27,38 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Component = ({className, children}) => {
-  const styles = useStyles();
-  const posts = useSelector(getPublishedPosts);
-  const currentStatus = useSelector(getStatus);
-  
-  const postsSorted = posts.sort((a, b) => {
-    return a.updated - b.updated  ;
-  });
+  const dispatch = useDispatch();
+  const posts = useSelector(getPosts);
+  const loading = useSelector(getLoading);
 
-  return(
+  const user = useSelector(getUser);
+
+  useEffect(() => {
+    dispatch(loadUserRequest());
+  }, [dispatch]);
+
+  useEffect(() => {
+    dispatch(loadPostsRequest());
+  }, [dispatch]);
+
+  const styles = useStyles();
+  
+  if(loading.active) return <h1>Loading</h1>;
+  else if(loading.error) return <h1>Error</h1>;
+  else return(
     <Grid className={clsx(className, styles.root)}>
       <Grid container direction="row"
         justify="center"
         alignItems="center">
-        {(currentStatus === 'logged' || currentStatus === 'admin') && 
+        { user && 
           <Button href="/post/add"  size="large" className={styles.button}>Add new post</Button>}
       </Grid>
-      <Grid container className={styles.posts} spacing={8}>
-        {postsSorted.map(post =>
+      <Grid container className={styles.posts}  spacing={8}>
+        {posts && posts.map(post =>
           <Grid item xs={3} key={post._id}>
             <Card >
               <CardActionArea>
-                <CardMedia  image={post.photo} title={post.photo}/>
+                {/* <CardMedia  image={post.photo} title={post.photo}/> */}
                 <CardContent>
                   <Typography gutterBottom variant="h5" component="h2">
                     {post.title}
@@ -58,9 +69,11 @@ const Component = ({className, children}) => {
                 </CardContent>
               </CardActionArea>
               <CardActions>
-                <Button href={`/post/${post._id}`} size="small" color="primary">
-                  Read more
-                </Button>                
+                <Link to={`/post/${post._id}`}>
+                  <Button  size="small" color="primary">
+                    Read more
+                  </Button>
+                </Link>
               </CardActions>
             </Card>
           </Grid>
@@ -74,16 +87,6 @@ Component.propTypes = {
   children: PropTypes.node,
   className: PropTypes.string,
 };
-
-// const mapStateToProps = state => ({
-//   someProp: reduxSelector(state),
-// });
-
-// const mapDispatchToProps = dispatch => ({
-//   someAction: arg => dispatch(reduxActionCreator(arg)),
-// });
-
-// const Container = connect(mapStateToProps, mapDispatchToProps)(Component);
 
 export {
   Component as Homepage,

@@ -6,7 +6,7 @@ import { editPost } from '../../../redux/postsRedux';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
 import { getPost } from '../../../redux/postsRedux';
-import { useParams, useHistory } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 // import { connect } from 'react-redux';
 // import { reduxSelector, reduxActionCreator } from '../../../redux/exampleRedux.js';
@@ -28,7 +28,6 @@ const Component = ({className, children}) => {
   const styles = useStyles();
   const dispatch = useDispatch();
   const loggedUser = useSelector(getUser);
-  const history = useHistory();
   const {id} = useParams();
   const post = useSelector(state => getPost(state, id));
 
@@ -54,7 +53,6 @@ const Component = ({className, children}) => {
       photo,
       price,
     }));
-    history.replace('/success');
   };
   if(post !== undefined && loggedUser && (loggedUser._id === post.authorId || loggedUser.admin)){
     return (
